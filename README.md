@@ -34,7 +34,8 @@ Taiwan. It can also be run manually from GitHub Actions.
 This is intentionally less frequent than daily because aviation navdata normally
 changes by cycle rather than every day. The workflow compares the generated
 `dataHash` with the currently published manifest and skips deployment when the
-normalized data has not changed and no static site page changed.
+normalized data has not changed. Pushes that touch the workflow, source data,
+builder, docs, or static site pages deploy the Pages artifact immediately.
 
 ## Public Pages
 

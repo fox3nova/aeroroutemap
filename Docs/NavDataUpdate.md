@@ -93,8 +93,9 @@ https://fox3nova.github.io/routemap/privacy.html
 https://fox3nova.github.io/routemap/support.html
 ```
 
-The workflow deploys when the generated navdata hash changes or when these
-static HTML pages change.
+Pushes that touch the workflow, source data, builder, docs, or static HTML pages
+deploy the Pages artifact immediately. Scheduled runs deploy only when the
+generated navdata hash differs from the currently published manifest.
 
 ## Current Source Limits
 
