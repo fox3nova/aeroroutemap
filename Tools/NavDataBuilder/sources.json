@@ -20,6 +20,15 @@
       "notes": "Open navaid source with no accuracy or fitness guarantee."
     },
     {
+      "id": "ourairports-airports",
+      "displayName": "OurAirports Airports",
+      "type": "ourairports_airports",
+      "url": "https://davidmegginson.github.io/ourairports-data/airports.csv",
+      "localPath": "Data/Airports.csv",
+      "license": "Public Domain",
+      "notes": "Open airport source normalized for ICAO/IATA route lookup."
+    },
+    {
       "id": "routemap-overrides",
       "displayName": "RouteMap Waypoint Overrides",
       "type": "waypoint_overrides",

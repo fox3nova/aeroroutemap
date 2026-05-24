@@ -20,9 +20,9 @@ UpdateSite/support.html
 Docs/NavDataUpdate.md
 ```
 
-The workflow downloads public upstream waypoint and navaid sources, applies the
-RouteMap override layer, builds a static update package, and deploys only the
-generated `UpdateSite/` artifact to GitHub Pages.
+The workflow downloads public upstream waypoint, airport, and navaid sources,
+applies the RouteMap override layer, builds a static update package, and deploys
+only the generated `UpdateSite/` artifact to GitHub Pages.
 
 Generated files are intentionally not committed back to the repository.
 

@@ -102,6 +102,7 @@ generated navdata hash differs from the currently published manifest.
 Current sources are suitable for RouteMap planning display and prototype use:
 
 - `global-waypoints`: waypoint CSV from `FayyazAK/Global-Aviation-Waypoints`.
+- `ourairports-airports`: airport CSV from OurAirports, normalized into ICAO and IATA lookup rows.
 - `ourairports-navaids`: navaid CSV from OurAirports.
 - `routemap-overrides`: RouteMap curated waypoint corrections.
 

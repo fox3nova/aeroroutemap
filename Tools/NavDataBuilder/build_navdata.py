@@ -175,6 +175,8 @@ def normalize_source(source: dict, data: bytes) -> list[NavPoint]:
         return normalize_global_waypoints(source["id"], text)
     if source["type"] == "ourairports_navaids":
         return normalize_ourairports_navaids(source["id"], text)
+    if source["type"] == "ourairports_airports":
+        return normalize_ourairports_airports(source["id"], text)
     if source["type"] == "waypoint_overrides":
         return normalize_waypoint_overrides(source["id"], text)
     raise ValueError(f"Unsupported source type: {source['type']}")
@@ -228,6 +230,57 @@ def normalize_ourairports_navaids(source_id: str, text: str) -> list[NavPoint]:
     return points
 
 
+def normalize_ourairports_airports(source_id: str, text: str) -> list[NavPoint]:
+    points = []
+    seen_idents = set()
+    for row in csv.DictReader(io.StringIO(text)):
+        airport_type = clean_text(row.get("type") or row.get("airport_type") or "")
+        if airport_type == "closed":
+            continue
+
+        iata = clean_ident(row.get("iata") or row.get("iata_code") or "")
+        icao = clean_ident(row.get("icao") or row.get("icao_code") or row.get("gps_code") or "")
+        ident = clean_ident(row.get("ident") or icao or iata)
+        primary_ident = icao or ident or iata
+        latitude = parse_coordinate(row.get("latitude") or row.get("latitude_deg"), 90)
+        longitude = parse_coordinate(row.get("longitude") or row.get("longitude_deg"), 180)
+        if not primary_ident or latitude is None or longitude is None:
+            continue
+
+        scheduled_service = clean_text(row.get("scheduled_service") or "")
+        if not is_route_airport(airport_type, scheduled_service, iata):
+            continue
+
+        name = clean_text(row.get("name") or primary_ident)
+        municipality = clean_text(row.get("municipality") or "")
+        country = clean_text(row.get("country") or row.get("iso_country") or "")
+        code_parts = [primary_ident]
+        if iata and iata != primary_ident:
+            code_parts.append(iata)
+        code_label = " / ".join(code_parts)
+        point_name = clean_text(" ".join(part for part in [code_label or primary_ident, name, municipality] if part))
+
+        for airport_ident in [primary_ident, iata]:
+            if not airport_ident:
+                continue
+            key = (airport_ident, latitude, longitude)
+            if key in seen_idents:
+                continue
+            seen_idents.add(key)
+            points.append(
+                NavPoint(
+                    ident=airport_ident,
+                    name=point_name,
+                    latitude=latitude,
+                    longitude=longitude,
+                    country=country,
+                    kind="airport",
+                    source=source_id,
+                )
+            )
+    return points
+
+
 def normalize_waypoint_overrides(source_id: str, text: str) -> list[NavPoint]:
     points = []
     for row in csv.DictReader(io.StringIO(text)):
@@ -257,6 +310,14 @@ def clean_ident(value: str) -> str:
 
 def clean_text(value: str) -> str:
     return " ".join(str(value).strip().split())
+
+
+def is_route_airport(airport_type: str, scheduled_service: str, iata: str) -> bool:
+    if airport_type in ("large_airport", "medium_airport"):
+        return True
+    if iata and airport_type not in ("closed", "heliport", "balloonport"):
+        return True
+    return scheduled_service == "yes"
 
 
 def parse_float(value: str | None) -> float | None:
