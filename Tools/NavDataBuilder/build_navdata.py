@@ -184,8 +184,8 @@ def normalize_global_waypoints(source_id: str, text: str) -> list[NavPoint]:
     points = []
     for row in csv.DictReader(io.StringIO(text)):
         ident = clean_ident(row.get("IDENT", ""))
-        latitude = parse_float(row.get("LATITUDE"))
-        longitude = parse_float(row.get("LONGITUDE"))
+        latitude = parse_coordinate(row.get("LATITUDE"), 90)
+        longitude = parse_coordinate(row.get("LONGITUDE"), 180)
         if not ident or latitude is None or longitude is None:
             continue
         country = clean_text(row.get("COUNTRY_NAME") or row.get("COUNTRY_CODE") or "")
@@ -207,8 +207,8 @@ def normalize_ourairports_navaids(source_id: str, text: str) -> list[NavPoint]:
     points = []
     for row in csv.DictReader(io.StringIO(text)):
         ident = clean_ident(row.get("ident", ""))
-        latitude = parse_float(row.get("latitude_deg"))
-        longitude = parse_float(row.get("longitude_deg"))
+        latitude = parse_coordinate(row.get("latitude_deg"), 90)
+        longitude = parse_coordinate(row.get("longitude_deg"), 180)
         if not ident or latitude is None or longitude is None:
             continue
         navaid_type = clean_text(row.get("type") or "navaid").lower()
@@ -232,8 +232,8 @@ def normalize_waypoint_overrides(source_id: str, text: str) -> list[NavPoint]:
     points = []
     for row in csv.DictReader(io.StringIO(text)):
         ident = clean_ident(row.get("IDENT", ""))
-        latitude = parse_float(row.get("LATITUDE"))
-        longitude = parse_float(row.get("LONGITUDE"))
+        latitude = parse_coordinate(row.get("LATITUDE"), 90)
+        longitude = parse_coordinate(row.get("LONGITUDE"), 180)
         if not ident or latitude is None or longitude is None:
             continue
         name = clean_text(row.get("NAME") or ident)
@@ -264,6 +264,51 @@ def parse_float(value: str | None) -> float | None:
         return float(value) if value not in (None, "") else None
     except ValueError:
         return None
+
+
+def parse_coordinate(value: str | None, maximum_degrees: float) -> float | None:
+    text = clean_text(value or "").replace("°", "").upper()
+    if not text:
+        return None
+
+    sign = 1.0
+    if text[0] in ("S", "W"):
+        sign = -1.0
+        text = text[1:]
+    elif text[0] in ("N", "E"):
+        text = text[1:]
+
+    if text and text[-1] in ("S", "W"):
+        sign = -1.0
+        text = text[:-1]
+    elif text and text[-1] in ("N", "E"):
+        text = text[:-1]
+
+    parsed = parse_float(text)
+    if parsed is None:
+        return None
+    if abs(parsed) > maximum_degrees:
+        parsed = parse_compact_dms(text, maximum_degrees)
+        if parsed is None:
+            return None
+    return parsed * sign
+
+
+def parse_compact_dms(text: str, maximum_degrees: float) -> float | None:
+    if not text.isdigit():
+        return None
+
+    degree_digits = 2 if maximum_degrees <= 90 else 3
+    minute_second_length = len(text) - degree_digits
+    if minute_second_length not in (2, 4):
+        return None
+
+    degrees = float(text[:degree_digits])
+    minutes = float(text[degree_digits:degree_digits + 2])
+    seconds = float(text[degree_digits + 2:]) if minute_second_length == 4 else 0.0
+    if degrees > maximum_degrees or minutes >= 60 or seconds >= 60:
+        return None
+    return degrees + minutes / 60 + seconds / 3600
 
 
 def make_navdata_csv(points: list[NavPoint]) -> bytes:
