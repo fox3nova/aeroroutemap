@@ -84,6 +84,18 @@ The app reads the manifest, downloads `NavData.csv`, validates the SHA-256 hash,
 stores the CSV in Application Support, and prefers the installed CSV before
 falling back to bundled navdata on later launches.
 
+## Static Pages
+
+The same GitHub Pages deployment also hosts App Store support pages:
+
+```text
+https://fox3nova.github.io/routemap/privacy.html
+https://fox3nova.github.io/routemap/support.html
+```
+
+The workflow deploys when the generated navdata hash changes or when these
+static HTML pages change.
+
 ## Current Source Limits
 
 Current sources are suitable for RouteMap planning display and prototype use:

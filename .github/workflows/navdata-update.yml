@@ -8,6 +8,7 @@ on:
       - ".github/workflows/navdata-update.yml"
       - "Tools/NavDataBuilder/**"
       - "Data/**"
+      - "UpdateSite/*.html"
       - "Docs/NavDataUpdate.md"
       - "README.md"
   workflow_dispatch:
@@ -75,16 +76,30 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check static page changes
+        id: site_changes
+        run: |
+          SITE_CHANGED="false"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            BEFORE="${{ github.event.before }}"
+            if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+              SITE_CHANGED="true"
+            elif git diff --name-only "$BEFORE" "${{ github.sha }}" | grep -E '^(UpdateSite/.*\.html|\.github/workflows/navdata-update\.yml)$' >/dev/null; then
+              SITE_CHANGED="true"
+            fi
+          fi
+          echo "changed=$SITE_CHANGED" >> "$GITHUB_OUTPUT"
+
       - name: Configure GitHub Pages
-        if: steps.changes.outputs.changed == 'true'
+        if: steps.changes.outputs.changed == 'true' || steps.site_changes.outputs.changed == 'true'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        if: steps.changes.outputs.changed == 'true'
+        if: steps.changes.outputs.changed == 'true' || steps.site_changes.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: UpdateSite
 
       - name: Deploy GitHub Pages
-        if: steps.changes.outputs.changed == 'true'
+        if: steps.changes.outputs.changed == 'true' || steps.site_changes.outputs.changed == 'true'
         uses: actions/deploy-pages@v4

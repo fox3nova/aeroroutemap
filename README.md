@@ -15,6 +15,8 @@ https://fox3nova.github.io/routemap/navdata/manifest.json
 .github/workflows/navdata-update.yml
 Tools/NavDataBuilder/
 Data/WaypointOverrides.csv
+UpdateSite/privacy.html
+UpdateSite/support.html
 Docs/NavDataUpdate.md
 ```
 
@@ -32,7 +34,14 @@ Taiwan. It can also be run manually from GitHub Actions.
 This is intentionally less frequent than daily because aviation navdata normally
 changes by cycle rather than every day. The workflow compares the generated
 `dataHash` with the currently published manifest and skips deployment when the
-normalized data has not changed.
+normalized data has not changed and no static site page changed.
+
+## Public Pages
+
+```text
+https://fox3nova.github.io/routemap/privacy.html
+https://fox3nova.github.io/routemap/support.html
+```
 
 ## Manual Run
 
