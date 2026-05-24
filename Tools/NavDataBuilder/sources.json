@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "global-waypoints",
+      "displayName": "Global Aviation Waypoints",
+      "type": "global_waypoints",
+      "url": "https://raw.githubusercontent.com/FayyazAK/Global-Aviation-Waypoints/main/global_aviation_waypoints.csv",
+      "localPath": "Data/GlobalWaypoints.csv",
+      "license": "MIT",
+      "notes": "Prototype waypoint source. Not certified AIRAC navdata."
+    },
+    {
+      "id": "ourairports-navaids",
+      "displayName": "OurAirports Navaids",
+      "type": "ourairports_navaids",
+      "url": "https://davidmegginson.github.io/ourairports-data/navaids.csv",
+      "localPath": "Data/Navaids.csv",
+      "license": "Public Domain",
+      "notes": "Open navaid source with no accuracy or fitness guarantee."
+    },
+    {
+      "id": "routemap-overrides",
+      "displayName": "RouteMap Waypoint Overrides",
+      "type": "waypoint_overrides",
+      "localPath": "Data/WaypointOverrides.csv",
+      "license": "Project data",
+      "notes": "Curated correction layer preferred over public prototype waypoint data."
+    }
+  ]
+}

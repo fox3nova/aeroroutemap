@@ -1,0 +1,81 @@
+name: Build RouteMap NavData
+
+on:
+  workflow_dispatch:
+    inputs:
+      cycle:
+        description: "Cycle label. Leave as auto for YYYYMMDD."
+        required: false
+        default: "auto"
+      base_url:
+        description: "Public base URL ending at /navdata. Optional."
+        required: false
+        default: ""
+  schedule:
+    - cron: "23 3 * * 4"
+
+concurrency:
+  group: routemap-navdata
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve public base URL
+        id: config
+        run: |
+          BASE_URL="${{ github.event.inputs.base_url || vars.NAVDATA_BASE_URL }}"
+          if [ -z "$BASE_URL" ]; then
+            BASE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/navdata"
+          fi
+          echo "base_url=$BASE_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Build navdata package
+        run: |
+          python3 Tools/NavDataBuilder/build_navdata.py \
+            --download \
+            --cycle "${{ github.event.inputs.cycle || 'auto' }}" \
+            --base-url "${{ steps.config.outputs.base_url }}"
+
+      - name: Check published data hash
+        id: changes
+        run: |
+          CURRENT_MANIFEST="${{ steps.config.outputs.base_url }}/manifest.json"
+          CURRENT_HASH=""
+          if curl -fsSL "$CURRENT_MANIFEST" -o /tmp/current-manifest.json; then
+            CURRENT_HASH="$(python3 -c "import json; print(json.load(open('/tmp/current-manifest.json')).get('dataHash', ''))")"
+          else
+            echo "No current published manifest found. A deploy is required."
+          fi
+
+          NEW_HASH="$(python3 -c "import json; print(json.load(open('UpdateSite/navdata/manifest.json')).get('dataHash', ''))")"
+          echo "current_hash=$CURRENT_HASH"
+          echo "new_hash=$NEW_HASH"
+
+          if [ -n "$CURRENT_HASH" ] && [ "$CURRENT_HASH" = "$NEW_HASH" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure GitHub Pages
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: UpdateSite
+
+      - name: Deploy GitHub Pages
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4
