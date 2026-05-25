@@ -55,6 +55,12 @@ jobs:
             --cycle "${{ github.event.inputs.cycle || 'auto' }}" \
             --base-url "${{ steps.config.outputs.base_url }}"
 
+      - name: Validate navdata references
+        run: |
+          python3 Tools/NavDataBuilder/validate_navdata.py \
+            --site UpdateSite/navdata \
+            --expectations Data/NavDataValidation.csv
+
       - name: Check published data hash
         id: changes
         run: |

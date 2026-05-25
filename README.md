@@ -15,14 +15,16 @@ https://fox3nova.github.io/aeroroutemap/navdata/manifest.json
 .github/workflows/navdata-update.yml
 Tools/NavDataBuilder/
 Data/WaypointOverrides.csv
+Data/NavDataValidation.csv
 UpdateSite/privacy.html
 UpdateSite/support.html
 Docs/NavDataUpdate.md
 ```
 
 The workflow downloads public upstream waypoint, airport, and navaid sources,
-applies the AeroRouteMap override layer, builds a static update package, and deploys
-only the generated `UpdateSite/` artifact to GitHub Pages.
+applies the AeroRouteMap override layer, builds a static update package, validates
+known reference points, and deploys only the generated `UpdateSite/` artifact to
+GitHub Pages.
 
 Generated files are intentionally not committed back to the repository.
 
@@ -36,6 +38,13 @@ changes by cycle rather than every day. The workflow compares the generated
 `dataHash` with the currently published manifest and skips deployment when the
 normalized data has not changed. Pushes that touch the workflow, source data,
 builder, docs, or static site pages deploy the Pages artifact immediately.
+
+## Data Validation
+
+`Data/NavDataValidation.csv` lists reference points that have been checked
+against official or curated sources. The workflow validates the generated
+`NavData.csv` before deployment and fails if any listed point is missing or
+outside its tolerance.
 
 ## Public Pages
 

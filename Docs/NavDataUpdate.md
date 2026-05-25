@@ -72,6 +72,14 @@ The generated static site is written to:
 UpdateSite/navdata/
 ```
 
+Validate the generated data before publishing:
+
+```sh
+python3 Tools/NavDataBuilder/validate_navdata.py \
+  --site UpdateSite/navdata \
+  --expectations Data/NavDataValidation.csv
+```
+
 ## App Import Flow
 
 The iOS app should request:
@@ -105,6 +113,8 @@ Current sources are suitable for AeroRouteMap planning display and prototype use
 - `ourairports-airports`: airport CSV from OurAirports, normalized into ICAO and IATA lookup rows.
 - `ourairports-navaids`: navaid CSV from OurAirports.
 - `aeroroutemap-overrides`: AeroRouteMap curated waypoint corrections.
+- `Data/NavDataValidation.csv`: checked reference points that must remain present
+  and within tolerance in the generated data.
 
 These sources are not certified AIRAC navigation data and are not suitable for
 operational navigation. Airway segment tables are present in the generated SQLite
