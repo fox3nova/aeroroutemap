@@ -9,3 +9,4 @@ DOBAT,32.866700,69.433300,DOBAT N644 Pakistan,route-fix,FlightPlanDatabase N644 
 BADIR,41.483333,45.366667,BADIR Georgia FRA/N644,route-fix,AIP Georgia ENR 4.4
 FOQUS,42.065278,42.995556,FOQUS Georgia FRA,route-fix,EUROCONTROL RAIS Abastumani Restricted Area
 GOKPA,41.746111,34.594722,GOKPA Turkey UL746/UM10,route-fix,Turkey AIP ENR 4.4
+TIA,12.656200,105.185000,TIA Southeast Asia N639/M755 route fix,route-fix,StatSim VVNB-WMKK route trace NAH N639 VILAO LEKOB TIA M755 KISAN; verify against current AIP
