@@ -1,14 +1,14 @@
-# RouteMap NavData Update Pipeline
+# AeroRouteMap NavData Update Pipeline
 
-This repository is a static update site for the RouteMap iOS app. The app should
-not depend directly on upstream aviation-data URLs. It should download RouteMap
+This repository is a static update site for the AeroRouteMap iOS app. The app should
+not depend directly on upstream aviation-data URLs. It should download AeroRouteMap
 owned files from GitHub Pages instead.
 
 ```text
 Upstream sources
   -> Tools/NavDataBuilder/build_navdata.py
   -> GitHub Pages UpdateSite/navdata/
-  -> https://fox3nova.github.io/routemap/navdata/manifest.json
+  -> https://fox3nova.github.io/aeroroutemap/navdata/manifest.json
 ```
 
 ## GitHub Pages
@@ -20,7 +20,7 @@ Repository settings:
 3. Optionally add repository variable:
 
 ```text
-NAVDATA_BASE_URL=https://fox3nova.github.io/routemap/navdata
+NAVDATA_BASE_URL=https://fox3nova.github.io/aeroroutemap/navdata
 ```
 
 The workflow also works without that variable because it derives the default URL
@@ -48,7 +48,7 @@ navdata/index.json
 navdata/cycles/<cycle>/manifest.json
 navdata/cycles/<cycle>/NavData.csv
 navdata/cycles/<cycle>/navdata.sqlite
-navdata/cycles/<cycle>/RouteMapNavData_<cycle>.rmapnavdata
+navdata/cycles/<cycle>/AeroRouteMapNavData_<cycle>.rmapnavdata
 ```
 
 Generated files are not committed to this repository. They are only uploaded as
@@ -63,7 +63,7 @@ snapshots:
 python3 Tools/NavDataBuilder/build_navdata.py \
   --download \
   --cycle test \
-  --base-url https://fox3nova.github.io/routemap/navdata
+  --base-url https://fox3nova.github.io/aeroroutemap/navdata
 ```
 
 The generated static site is written to:
@@ -77,7 +77,7 @@ UpdateSite/navdata/
 The iOS app should request:
 
 ```text
-https://fox3nova.github.io/routemap/navdata/manifest.json
+https://fox3nova.github.io/aeroroutemap/navdata/manifest.json
 ```
 
 The app reads the manifest, downloads `NavData.csv`, validates the SHA-256 hash,
@@ -89,8 +89,8 @@ falling back to bundled navdata on later launches.
 The same GitHub Pages deployment also hosts App Store support pages:
 
 ```text
-https://fox3nova.github.io/routemap/privacy.html
-https://fox3nova.github.io/routemap/support.html
+https://fox3nova.github.io/aeroroutemap/privacy.html
+https://fox3nova.github.io/aeroroutemap/support.html
 ```
 
 Pushes that touch the workflow, source data, builder, docs, or static HTML pages
@@ -99,12 +99,12 @@ generated navdata hash differs from the currently published manifest.
 
 ## Current Source Limits
 
-Current sources are suitable for RouteMap planning display and prototype use:
+Current sources are suitable for AeroRouteMap planning display and prototype use:
 
 - `global-waypoints`: waypoint CSV from `FayyazAK/Global-Aviation-Waypoints`.
 - `ourairports-airports`: airport CSV from OurAirports, normalized into ICAO and IATA lookup rows.
 - `ourairports-navaids`: navaid CSV from OurAirports.
-- `routemap-overrides`: RouteMap curated waypoint corrections.
+- `aeroroutemap-overrides`: AeroRouteMap curated waypoint corrections.
 
 These sources are not certified AIRAC navigation data and are not suitable for
 operational navigation. Airway segment tables are present in the generated SQLite

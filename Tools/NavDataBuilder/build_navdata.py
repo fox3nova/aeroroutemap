@@ -35,7 +35,7 @@ class NavPoint:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build a static RouteMap navdata update package."
+        description="Build a static AeroRouteMap navdata update package."
     )
     parser.add_argument("--sources", default=str(DEFAULT_SOURCES), help="Path to sources.json.")
     parser.add_argument("--output", default="UpdateSite/navdata", help="Output folder for static hosting.")
@@ -54,7 +54,7 @@ def main() -> int:
 
     source_results = []
     points = []
-    with tempfile.TemporaryDirectory(prefix="routemap-navdata-") as temp_name:
+    with tempfile.TemporaryDirectory(prefix="aeroroutemap-navdata-") as temp_name:
         temp_dir = Path(temp_name)
         for source in source_config["sources"]:
             data = load_source(source, args.download, temp_dir)
@@ -77,7 +77,7 @@ def main() -> int:
 
         navdata_csv_path = cycle_dir / "NavData.csv"
         sqlite_path = cycle_dir / "navdata.sqlite"
-        package_path = cycle_dir / f"RouteMapNavData_{cycle}.rmapnavdata"
+        package_path = cycle_dir / f"AeroRouteMapNavData_{cycle}.rmapnavdata"
 
         navdata_csv_path.write_bytes(csv_bytes)
         build_sqlite(sqlite_path, points, cycle, generated_at, data_hash)
@@ -141,7 +141,7 @@ def load_source(source: dict, should_download: bool, temp_dir: Path) -> bytes:
         try:
             request = urllib.request.Request(
                 source["url"],
-                headers={"User-Agent": "RouteMapNavDataBuilder/1.0"},
+                headers={"User-Agent": "AeroRouteMapNavDataBuilder/1.0"},
             )
             with urllib.request.urlopen(request, timeout=60) as response:
                 destination.write_bytes(response.read())
@@ -569,7 +569,7 @@ def update_index(index_path: Path, latest_manifest: dict) -> None:
 
 
 def print_summary(manifest: dict) -> None:
-    print(f"Built RouteMap navdata cycle {manifest['cycle']}")
+    print(f"Built AeroRouteMap navdata cycle {manifest['cycle']}")
     print(f"Data hash: {manifest['dataHash']}")
     print(f"Points: {manifest['counts']['points']}")
     if "package" in manifest:

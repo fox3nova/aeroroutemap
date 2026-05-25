@@ -1,4 +1,4 @@
-name: Build RouteMap NavData
+name: Build AeroRouteMap NavData
 
 on:
   push:
@@ -25,7 +25,7 @@ on:
     - cron: "23 3 * * 4"
 
 concurrency:
-  group: routemap-navdata
+  group: aeroroutemap-navdata
   cancel-in-progress: false
 
 permissions:

@@ -29,8 +29,8 @@
       "notes": "Open airport source normalized for ICAO/IATA route lookup."
     },
     {
-      "id": "routemap-overrides",
-      "displayName": "RouteMap Waypoint Overrides",
+      "id": "aeroroutemap-overrides",
+      "displayName": "AeroRouteMap Waypoint Overrides",
       "type": "waypoint_overrides",
       "localPath": "Data/WaypointOverrides.csv",
       "license": "Project data",

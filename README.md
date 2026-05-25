@@ -1,12 +1,12 @@
-# RouteMap NavData Update Site
+# AeroRouteMap NavData Update Site
 
-This repository only hosts RouteMap navigation-data updates. It does not need
+This repository only hosts AeroRouteMap navigation-data updates. It does not need
 the iOS app source code.
 
 The app-facing manifest is published by GitHub Pages at:
 
 ```text
-https://fox3nova.github.io/routemap/navdata/manifest.json
+https://fox3nova.github.io/aeroroutemap/navdata/manifest.json
 ```
 
 ## What Is In This Repository
@@ -21,7 +21,7 @@ Docs/NavDataUpdate.md
 ```
 
 The workflow downloads public upstream waypoint, airport, and navaid sources,
-applies the RouteMap override layer, builds a static update package, and deploys
+applies the AeroRouteMap override layer, builds a static update package, and deploys
 only the generated `UpdateSite/` artifact to GitHub Pages.
 
 Generated files are intentionally not committed back to the repository.
@@ -40,8 +40,8 @@ builder, docs, or static site pages deploy the Pages artifact immediately.
 ## Public Pages
 
 ```text
-https://fox3nova.github.io/routemap/privacy.html
-https://fox3nova.github.io/routemap/support.html
+https://fox3nova.github.io/aeroroutemap/privacy.html
+https://fox3nova.github.io/aeroroutemap/support.html
 ```
 
 ## Manual Run
@@ -49,13 +49,13 @@ https://fox3nova.github.io/routemap/support.html
 In GitHub:
 
 ```text
-Actions > Build RouteMap NavData > Run workflow
+Actions > Build AeroRouteMap NavData > Run workflow
 ```
 
 Optional repository variable:
 
 ```text
-NAVDATA_BASE_URL=https://fox3nova.github.io/routemap/navdata
+NAVDATA_BASE_URL=https://fox3nova.github.io/aeroroutemap/navdata
 ```
 
 If the variable is not set, the workflow derives the same URL from the repository
