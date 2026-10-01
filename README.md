@@ -1,5 +1,7 @@
 # AeroRouteMap NavData Update Site
 
+> **Maintenance notice:** This project is no longer maintained, and navigation data is no longer updated. The documentation below is retained for historical reference.
+
 This repository only hosts AeroRouteMap navigation-data updates. It does not need
 the iOS app source code.
 
